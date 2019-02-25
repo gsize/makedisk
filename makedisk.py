@@ -129,7 +129,7 @@ def Makedisk2(d,center,pixelsize,imagesize,fine):
     plt.show()
     
     
-    img=np.zeros(imagesize,np.float32)
+    img=np.zeros((imagesize[1],imagesize[0]),np.float32)
     
     ind_x_start=int((subx[0]-rangex[0]+pixelsize[0]/2.0)//pixelsize[0])
     ind_x_end  =int((subx[-1]-rangex[0]+pixelsize[0]/2.0)//pixelsize[0]+1)
@@ -139,7 +139,7 @@ def Makedisk2(d,center,pixelsize,imagesize,fine):
     for subi,i in zip(range(0,subBins[0],fine), range(ind_x_start,ind_x_end)):
         for subj,j in zip(range(0,subBins[1],fine),range(ind_y_start,ind_y_end) ):
             print('sub: %d,%d   img: %d,%d' %(subi,subj,i,j))
-            img[i,j]=img1[subi:subi+fine,subj:subj+fine].mean()
+            img[j,i]=img1[subj:subj+fine,subi:subi+fine].mean()
     
     return img
 
@@ -185,8 +185,8 @@ def InitLesion_par():
     img0List=[]
     img1List=[]
     img2List=[]
-    #for i in range(len(ballDiameter)):
-    for i in range(1):
+    for i in range(len(ballDiameter)):
+    #for i in range(1):
         center=(ballPosition[0][i],ballPosition[1][i])
         img0=Makedisk0(ballDiameter[i],center,pixelsize,imagesize,fine)
         img1=Makedisk1(ballDiameter[i],center,pixelsize,imagesize,fine)
@@ -217,3 +217,17 @@ if __name__ == '__main__':
     #imagesize=(20,20)
     
     #'''
+    x=np.linspace(-100,100,200)
+    y=np.linspace(-60,60,120)
+    
+    X,Y=np.meshgrid(x,y)
+    center=(30,40)
+    d=16
+    mask=(X+center[0])**2+(Y+center[1])**2<(d/2)**2
+    mask[100,50]=1
+    plt.figure()
+    plt.subplot(121)
+    plt.plot(X,Y,color='gray',marker='.',markersize=2,linestyle='')
+    plt.contour(X, Y, (X+center[0])**2 + (Y+center[1])**2, [(d/2)**2])
+    plt.subplot(122)
+    plt.imshow(mask)
