@@ -88,8 +88,12 @@ def Makedisk2(d,center,pixelsize,imagesize,fine):
     subYcenter=((center[1]-(rangey[0]-pixelsize[1]/2.0))//pixelsize[1])*pixelsize[1]+rangey[0]
     subCenter=(subXcenter,subYcenter)
     
-    halfbins_x1= int((d/pixelsize[0]+1)/2)
-    halfbins_y1= int((d/pixelsize[1]+1)/2)
+    #扩大感兴趣直径，包含圆圈所有点
+    vector1=np.array(center)
+    vector2=np.array(subCenter)
+    dt=np.linalg.norm(vector1-vector2)
+    halfbins_x1= int(((d+dt)/pixelsize[0]+1)/2)
+    halfbins_y1= int(((d+dt)/pixelsize[1]+1)/2)
     bins_1=(halfbins_x1*2+1,halfbins_y1*2+1)
     range_x1=(subXcenter-halfbins_x1*pixelsize[0],subXcenter+halfbins_x1*pixelsize[0])
     range_y1=(subYcenter-halfbins_y1*pixelsize[1],subYcenter+halfbins_y1*pixelsize[1])
